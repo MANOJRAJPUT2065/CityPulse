@@ -1,24 +1,48 @@
+# Node modules (both frontend & backend)
+node_modules/
+frontend/node_modules/
+backend/node_modules/
+
 # Logs
 logs
 *.log
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# Build files
+/build
+/dist
+frontend/build
+frontend/dist
+
+# OS-specific
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
+Thumbs.db
+
+# Editor folders
+.vscode/
+.idea/
 *.sw?
+
+# Test coverage
+coverage/
+
+# Uploaded files (if stored locally)
+uploads/
+python/uploads/
+python/processed/
+
+# Misc
+*.tgz
+*.bak
+*.tmp
+*.swp
+
+# React cache
+.cache/
