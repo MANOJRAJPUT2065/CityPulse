@@ -4,13 +4,21 @@ import Post from "../models/postModel.js";
 
 const router = express.Router();
 
-// ✅ Get all posts
+  
+// ✅ GET all posts for Admin Dashboard
 router.get("/", async (req, res) => {
+  console.log("Inside admin dashboard.....");
+
   try {
-    const posts = await Post.find().sort({ createdAt: -1 });
-    res.status(200).json(posts);
+    const posts = await Post.find()
+      .sort({ createdAt: -1 })
+      .populate("user", "name email"); // make sure to populate user if referenced
+
+    console.log("📦 Posts to be sent:", posts);
+    return res.status(200).json(posts);
   } catch (err) {
-    res.status(500).json({ message: "Error fetching posts" });
+    console.error("❌ Error fetching posts:", err);
+    return res.status(500).json({ message: "Error fetching posts" });
   }
 });
 
