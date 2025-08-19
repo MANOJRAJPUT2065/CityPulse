@@ -1,83 +1,46 @@
-// backend/routes/adminRoutes.js
 import express from "express";
-import Post from "../models/postModel.js";
+import auth from "../middleware/auth.js";
+import requireAdmin from "../middleware/requireAdmin.js";
+import {
+  getAllPostsAdmin,
+  updatePostStatus,
+  deletePostAdmin,
+  toggleStar,
+  addAdminComment,
+  getAdminAnalytics,
+  bulkUpdatePosts,
+  assignPost,
+  getAdminUsers
+} from "../controllers/adminController.js";
+import {
+  validateObjectId,
+  validateAdminAction,
+  validateAddComment,
+  validateQuery
+} from "../middleware/validation.js";
 
 const router = express.Router();
 
-  
-// ✅ GET all posts for Admin Dashboard
-router.get("/", async (req, res) => {
-  console.log("Inside admin dashboard.....");
+// Apply authentication and admin middleware to all routes
+router.use(auth);
+router.use(requireAdmin);
 
-  try {
-    const posts = await Post.find()
-      .sort({ createdAt: -1 })
-      .populate("user", "name email"); // make sure to populate user if referenced
+// Main admin dashboard routes
+router.get("/", validateQuery, getAllPostsAdmin);
+router.get("/analytics", getAdminAnalytics);
+router.get("/users", getAdminUsers);
 
-    console.log("📦 Posts to be sent:", posts);
-    return res.status(200).json(posts);
-  } catch (err) {
-    console.error("❌ Error fetching posts:", err);
-    return res.status(500).json({ message: "Error fetching posts" });
-  }
-});
+// Post management routes
+router.patch("/:id/status", validateObjectId, validateAdminAction, updatePostStatus);
+router.delete("/:id", validateObjectId, deletePostAdmin);
+router.patch("/:id/star", validateObjectId, toggleStar);
+router.post("/:id/comment", validateObjectId, validateAddComment, addAdminComment);
+router.patch("/:id/assign", validateObjectId, assignPost);
 
-// ✅ Delete a post by ID
-router.delete("/:id", async (req, res) => {
-  try {
-    await Post.findByIdAndDelete(req.params.id);
-    res.status(200).json({ message: "Post deleted" });
-  } catch (err) {
-    res.status(500).json({ message: "Error deleting post" });
-  }
-});
+// Bulk operations
+router.patch("/bulk/update", bulkUpdatePosts);
 
-// ✅ Toggle status (pending <-> complete)
-router.patch("/:id/status", async (req, res) => {
-  try {
-    const post = await Post.findById(req.params.id);
-    if (!post) return res.status(404).json({ message: "Post not found" });
-
-    post.status = post.status === "pending" ? "complete" : "pending";
-    await post.save();
-    res.status(200).json(post);
-  } catch (err) {
-    res.status(500).json({ message: "Error toggling status" });
-  }
-});
-
-// ✅ Add star (reward)
-router.patch("/:id/star", async (req, res) => {
-  try {
-    const post = await Post.findById(req.params.id);
-    if (!post) return res.status(404).json({ message: "Post not found" });
-
-    post.stars = (post.stars || 0) + 1;
-    await post.save();
-    res.status(200).json(post);
-  } catch (err) {
-    res.status(500).json({ message: "Error adding star" });
-  }
-});
-
-// ✅ Add comment to post
-router.post("/:id/comment", async (req, res) => {
-  try {
-    const { text } = req.body;
-    const post = await Post.findById(req.params.id);
-    if (!post) return res.status(404).json({ message: "Post not found" });
-
-    const newComment = {
-      text,
-      createdAt: new Date(),
-    };
-
-    post.comments.push(newComment);
-    await post.save();
-    res.status(201).json(post);
-  } catch (err) {
-    res.status(500).json({ message: "Error adding comment" });
-  }
-});
+// Legacy routes for backward compatibility
+router.patch("/:id", validateObjectId, validateAdminAction, updatePostStatus);
 
 export default router;
