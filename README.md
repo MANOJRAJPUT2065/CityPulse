@@ -1,12 +1,3 @@
-Bhai, neeche tera **updated `README.md`** diya gaya hai — ab isme **screenshot section** bhi add kar diya hai, jahan tu image daal sakta hai (jaise `admin-dashboard.png`) 👇
-
-> 📸 Bas tu image ko `frontend/public/assets/` folder mein save kar dena, and vo GitHub pe bhi show hoga.
-
----
-
-### ✅ `README.md` (with image section)
-
-````markdown
 # 🌆 CityPulse – Real-time Civic Issue Reporting Platform
 
 CityPulse is a modern civic engagement platform that empowers citizens to report real-time urban issues and helps authorities take faster action.
@@ -175,4 +166,7 @@ Email: `smanojsingh073@gmail.com`
 ## 📢 Final Thoughts
 
 CityPulse transforms complaints into actions and makes every citizen a collaborator in building a better city. Let’s report issues, solve them together, and build smarter, cleaner communities! 💪🌍
-````
+
+```
+
+```
